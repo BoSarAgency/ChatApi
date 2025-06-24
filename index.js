@@ -51,6 +51,7 @@ app.post("/messages", async (request, response) => {
     // Parse JSON body using HyperExpress built-in method
     const body = await request.json();
     const { threadId, content } = body;
+    console.log("Received message:", JSON.stringify(body));
 
     // Validate input
     if (!threadId || !content) {
@@ -97,6 +98,7 @@ app.post("/messages", async (request, response) => {
     await database.saveMessage(threadId, "assistant", assistantResponse);
 
     // Return response
+    console.log("Sent response:", assistantResponse);
     response.json({ content: assistantResponse });
   } catch (error) {
     console.error("Error processing message:", error);
@@ -149,9 +151,13 @@ async function startServer() {
         `💬 Messages endpoint: POST http://localhost:${PORT}/messages`
       );
     } catch (listenError) {
+      const errorMessage =
+        listenError?.message || listenError?.toString() || "Unknown error";
+
       if (
-        listenError.message.includes("busy port") ||
-        listenError.message.includes("EADDRINUSE")
+        errorMessage.includes("busy port") ||
+        errorMessage.includes("EADDRINUSE") ||
+        errorMessage.includes("address already in use")
       ) {
         console.error(
           `❌ Port ${PORT} is already in use. Please try a different port.`
@@ -162,7 +168,7 @@ async function startServer() {
       } else {
         console.error(
           `❌ Failed to start server on port ${PORT}:`,
-          listenError.message
+          errorMessage
         );
       }
       throw listenError;
