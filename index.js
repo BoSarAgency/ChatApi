@@ -85,7 +85,7 @@ app.post("/messages", async (request, response) => {
 
     // Call OpenAI API
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4.1-mini",
       messages: openaiMessages,
       max_tokens: 1000,
       temperature: 0.7,
@@ -140,13 +140,33 @@ async function startServer() {
 
     const PORT = process.env.PORT || 3000;
 
-    app.listen(PORT, () => {
+    // Try to start the server and handle the promise properly
+    try {
+      await app.listen(PORT);
       console.log(`🚀 ChatAPI server is running on port ${PORT}`);
       console.log(`📡 Health check: http://localhost:${PORT}/`);
       console.log(
         `💬 Messages endpoint: POST http://localhost:${PORT}/messages`
       );
-    });
+    } catch (listenError) {
+      if (
+        listenError.message.includes("busy port") ||
+        listenError.message.includes("EADDRINUSE")
+      ) {
+        console.error(
+          `❌ Port ${PORT} is already in use. Please try a different port.`
+        );
+        console.log(
+          `💡 Try setting PORT environment variable: PORT=3001 npm start`
+        );
+      } else {
+        console.error(
+          `❌ Failed to start server on port ${PORT}:`,
+          listenError.message
+        );
+      }
+      throw listenError;
+    }
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);
