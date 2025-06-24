@@ -1,0 +1,26 @@
+{
+  "name": "chatapi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "chat",
+    "openai",
+    "hyperexpress",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "ISC",
+  "description": "Lightweight Node.js API with HyperExpress for chat completions using OpenAI",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "hyper-express": "^6.17.3",
+    "openai": "^5.7.0",
+    "sqlite3": "^5.1.7"
+  }
+}
