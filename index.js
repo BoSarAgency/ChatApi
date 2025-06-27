@@ -84,6 +84,16 @@ app.post("/messages", async (request, response) => {
       content: msg.content,
     }));
 
+    // Add system prompt to provide context and instructions
+    const systemPrompt = {
+      role: "system",
+      content:
+        "You are a helpful AI assistant. Provide clear, concise, and accurate responses. Be friendly and professional in your interactions.",
+    };
+
+    // Insert system prompt at the beginning of the conversation
+    openaiMessages.unshift(systemPrompt);
+
     // Call OpenAI API
     const completion = await openai.chat.completions.create({
       model: "gpt-4.1-mini",
